@@ -601,13 +601,13 @@ public class AddressBook {
     private static String getUserInput() {
         System.out.print(LINE_PREFIX + "Enter command: ");
         String inputLine = SCANNER.nextLine();
-        while (cleanInputLine(inputLine)) {
+        while (cleanAndCheckInputLine(inputLine)) {
             inputLine = SCANNER.nextLine();
         }
         return inputLine;
     }
     
-    private static boolean cleanInputLine(String inputLine) {
+    private static boolean cleanAndCheckInputLine(String inputLine) {
     	if(inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
     		return true;
     	}
