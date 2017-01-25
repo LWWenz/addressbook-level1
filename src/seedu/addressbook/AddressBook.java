@@ -134,7 +134,7 @@ public class AddressBook {
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
 
     private static final String DIVIDER = "===================================================";
-
+    
 
     /* We use a String array to store details of a single person.
      * The constants given below are the indexes for the different data elements of a person
@@ -208,25 +208,12 @@ public class AddressBook {
 
     public static void main(String[] args) {
         showWelcomeMessage();
-        //processProgramArgs(args);
-        if (args.length >= 2) {
-            showToUser("Too many parameters! Correct program argument format:\tjava AddressBook\tjava AddressBook [custom storage file path]");
-            exitProgram();
-        }
-
-        if (args.length == 1) {
-            setupGivenFileForStorage(args[0]);
-        }
-
-        if(args.length == 0) {
-            setupDefaultFileForStorage();
-        }
-        
+        processProgramArgs(args);
         loadDataFromStorage();
         while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
-            String feedback = executeCommand(userCommand);
+            String feedback = executeCommand(userCommand.toLowerCase());
             showResultToUser(feedback);
         }
     }
@@ -269,7 +256,7 @@ public class AddressBook {
      *
      * @param args full program arguments passed to application main method
      */
-    /*private static void processProgramArgs(String[] args) {
+    private static void processProgramArgs(String[] args) {
         if (args.length >= 2) {
             showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
             exitProgram();
@@ -282,8 +269,8 @@ public class AddressBook {
         if(args.length == 0) {
             setupDefaultFileForStorage();
         }
-    }*/
-
+    }
+    
     /**
      * Sets up the storage file based on the supplied file path.
      * Creates the file if it is missing.
@@ -994,7 +981,7 @@ public class AddressBook {
         final int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
         // name is leading substring up to first data prefix symbol
         int indexOfFirstPrefix = Math.min(indexOfEmailPrefix, indexOfPhonePrefix);
-        return encoded.substring(0, indexOfFirstPrefix).trim();
+        return encoded.substring(0, indexOfFirstPrefix).trim().toLowerCase();
     }
 
     /**
