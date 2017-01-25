@@ -210,7 +210,7 @@ public class AddressBook {
         showWelcomeMessage();
         //processProgramArgs(args);
         if (args.length >= 2) {
-            showToUser(MESSAGE_INVALID_PROGRAM_ARGS);
+            showToUser("Too many parameters! Correct program argument format:\tjava AddressBook\tjava AddressBook [custom storage file path]");
             exitProgram();
         }
 
@@ -221,6 +221,7 @@ public class AddressBook {
         if(args.length == 0) {
             setupDefaultFileForStorage();
         }
+        
         loadDataFromStorage();
         while (true) {
             String userCommand = getUserInput();
