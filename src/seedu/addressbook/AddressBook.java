@@ -601,11 +601,18 @@ public class AddressBook {
     private static String getUserInput() {
         System.out.print(LINE_PREFIX + "Enter command: ");
         String inputLine = SCANNER.nextLine();
-        // silently consume all blank and comment lines
-        while (inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
+        while (cleanInputLine(inputLine)) {
             inputLine = SCANNER.nextLine();
         }
         return inputLine;
+    }
+    
+    private static boolean cleanInputLine(String inputLine) {
+    	if(inputLine.trim().isEmpty() || inputLine.trim().charAt(0) == INPUT_COMMENT_MARKER) {
+    		return true;
+    	}
+    	
+    	return false;
     }
 
    /*
@@ -1150,8 +1157,8 @@ public class AddressBook {
      * @param sign  Parameter sign to be removed
      * @return  string without the sign
      */
-    private static String removePrefixSign(String s, String sign) {
-        return s.replace(sign, "");
+    private static String removePrefixSign(String s, String prefix) {
+        return s.replace(prefix, "");
     }
 
     /**
