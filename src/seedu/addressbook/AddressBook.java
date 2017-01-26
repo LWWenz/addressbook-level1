@@ -132,8 +132,11 @@ public class AddressBook {
     private static final String COMMAND_EXIT_WORD = "exit";
     private static final String COMMAND_EXIT_DESC = "Exits the program.";
     private static final String COMMAND_EXIT_EXAMPLE = COMMAND_EXIT_WORD;
+    
 
     private static final String DIVIDER = "===================================================";
+    
+    private static final int MAX_ARGUMENT = 3;
     
 
     /* We use a String array to store details of a single person.
@@ -210,10 +213,15 @@ public class AddressBook {
         showWelcomeMessage();
         processProgramArgs(args);
         loadDataFromStorage();
-        while (true) {
+        //Learn from Tutorial, move the low level code to a method so that main has all high level code.
+        beginExecutingCommands();
+    }
+    
+    private static void beginExecutingCommands() {
+    	while (true) {
             String userCommand = getUserInput();
             echoUserCommand(userCommand);
-            String feedback = executeCommand(userCommand.toLowerCase());
+            String feedback = executeCommand(userCommand);
             showResultToUser(feedback);
         }
     }
@@ -394,8 +402,8 @@ public class AddressBook {
      * @return  size 2 array; first element is the command type and second element is the arguments string
      */
     private static String[] splitCommandWordAndArgs(String rawUserInput) {
-        final String[] split =  rawUserInput.trim().split("\\s+", 2);
-        return split.length == 2 ? split : new String[] { split[0] , "" }; // else case: no parameters
+        final String[] splits =  rawUserInput.trim().split("\\s+", 2);
+        return splits.length == 2 ? splits : new String[] { splits[0] , "" }; // else case: no parameters
     }
 
     /**
@@ -450,7 +458,7 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeFindPersons(String commandArgs) {
-        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
+        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs.toLowerCase());
         final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
         showToUser(personsFound);
         return getMessageForPersonsDisplayedSummary(personsFound);
@@ -625,6 +633,7 @@ public class AddressBook {
     /**
      * Shows a message to the user
      */
+    //It is not recommended to use vargs.
     private static void showToUser(String... messages) {
         for (String m : messages) {
             System.out.println(LINE_PREFIX + m);
@@ -964,7 +973,7 @@ public class AddressBook {
     private static boolean isPersonDataExtractableFrom(String personData) {
         final String matchAnyPersonDataPrefix = PERSON_DATA_PREFIX_PHONE + '|' + PERSON_DATA_PREFIX_EMAIL;
         final String[] splitArgs = personData.trim().split(matchAnyPersonDataPrefix);
-        return splitArgs.length == 3 // 3 arguments
+        return splitArgs.length == MAX_ARGUMENT // From Tut, added MAX_ARGUMENT variable to designate the MAX_ARGUMENT
                 && !splitArgs[0].isEmpty() // non-empty arguments
                 && !splitArgs[1].isEmpty()
                 && !splitArgs[2].isEmpty();
@@ -981,7 +990,7 @@ public class AddressBook {
         final int indexOfEmailPrefix = encoded.indexOf(PERSON_DATA_PREFIX_EMAIL);
         // name is leading substring up to first data prefix symbol
         int indexOfFirstPrefix = Math.min(indexOfEmailPrefix, indexOfPhonePrefix);
-        return encoded.substring(0, indexOfFirstPrefix).trim().toLowerCase();
+        return encoded.substring(0, indexOfFirstPrefix).trim();
     }
 
     /**
@@ -1153,12 +1162,16 @@ public class AddressBook {
     /**
      * Removes sign(p/, d/, etc) from parameter string
      *
-     * @param s  Parameter as a string
-     * @param sign  Parameter sign to be removed
+     * @param fullString  Parameter as a string
+     * @param prefix  Parameter prefix to be removed
      * @return  string without the sign
      */
-    private static String removePrefixSign(String s, String prefix) {
-        return s.replace(prefix, "");
+    private static String removePrefixSign(String fullString, String prefix) {
+        if(fullString.indexOf(prefix) == 0) {
+        	return fullString.replace(prefix, "");
+        }
+        
+        return fullString;
     }
 
     /**
@@ -1168,7 +1181,7 @@ public class AddressBook {
      * @return split by whitespace
      */
     private static ArrayList<String> splitByWhitespace(String toSplit) {
-        return new ArrayList<>(Arrays.asList(toSplit.trim().split("\\s+")));
+        return new ArrayList<>(Arrays.asList(toSplit.trim().toLowerCase().split("\\s+")));
     }
 
 }
